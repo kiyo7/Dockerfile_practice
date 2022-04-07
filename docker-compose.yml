@@ -1,0 +1,31 @@
+# ymlはネストで親子関係を表すファイル形式
+
+version: '3' # docker-composeファイルのバージョンの明記
+services: #ここから下に使うコンテナを書いていく。今回の例ではwebとdbというコンテナを使う(名前は任意)
+  php:
+    build: ./php 'buildされるDockerfileのパス'
+    container_name: php-web  'コンテナに付ける名前(任意)' #docker run --nameと同義 全てのコンテナにつけるのがオススメ
+    volumes:
+      - ./source:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./php/vhost.conf:/etc/apache2/conf-enabled/vhost.conf 
+      'ホストのパス:コンテナのパス' # docker run -vと同義 ホスト側は相対パスで書くように(ユーザーによって異なるユーザー名の影響があるため)
+    ports:
+      - 8080:80
+      "外部公開ポート:コンテナ内部ポート"
+      #ポートの開放 ポートフォワーディングとも呼ばれる docker run -pと同義 ポートを被らないように出来る **必ずネストして書く**
+  db: 
+    image: mariadb:10.6.4 '使用するイメージ'
+    container_name: php-db
+    environment: "環境変数の定義" #docker inspectで閲覧可能
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    volumes:
+    - ./data:/var/lib/mysql
+    - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+    - 3306:3306
+
