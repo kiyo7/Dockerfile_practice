@@ -1,7 +1,7 @@
 # ymlはネストで親子関係を表すファイル形式
 
 version: '3' # docker-composeファイルのバージョンの明記
-services: #ここから下に使うコンテナを書いていく。今回の例ではwebとdbというコンテナを使う(名前は任意)
+services: #ここから下に使うコンテナを書いていく。今回の例ではphpとdbというコンテナを使う(名前は任意)
   php:
     build: ./php 'buildされるDockerfileのパス'
     container_name: php-web  'コンテナに付ける名前(任意)' #docker run --nameと同義 全てのコンテナにつけるのがオススメ
